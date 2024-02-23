@@ -3,6 +3,7 @@
 package main
 
 import (
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"videoweb/config"
 	"videoweb/database/DB/dao"
@@ -16,5 +17,8 @@ func main() {
 	cache.InitRedis()
 
 	register(h)
+	h.StaticFS("/data", &app.FS{
+		Root: "usr/local",
+	})
 	h.Spin()
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"path/filepath"
 	"time"
 	"videoweb/config"
@@ -30,7 +31,12 @@ func GetURL(objectName string) (string, error) {
 func UploadVideo(filePath string) (string, error) {
 	ext := filepath.Ext(filePath)
 	objectName := "video/" + uuid.Must(uuid.NewRandom()).String() + ext
-	_, err := config.MinioClient.FPutObject(context.Background(), config.BucketName, objectName, filePath, minio.PutObjectOptions{})
+	resp, err := http.Get(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	_, err = config.MinioClient.PutObject(context.Background(), config.BucketName, objectName, resp.Body, -1, minio.PutObjectOptions{})
 	if err != nil {
 		return "", err
 	}
@@ -40,7 +46,12 @@ func UploadVideo(filePath string) (string, error) {
 func UploadCover(filePath string) (string, error) {
 	ext := filepath.Ext(filePath)
 	objectName := "cover/" + uuid.Must(uuid.NewRandom()).String() + ext
-	_, err := config.MinioClient.FPutObject(context.Background(), config.BucketName, objectName, filePath, minio.PutObjectOptions{})
+	resp, err := http.Get(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	_, err = config.MinioClient.PutObject(context.Background(), config.BucketName, objectName, resp.Body, -1, minio.PutObjectOptions{})
 	if err != nil {
 		return "", err
 	}

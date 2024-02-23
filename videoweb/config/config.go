@@ -2,7 +2,7 @@ package config
 
 //[mysql]
 const (
-	SqlUserName = "user"
+	SqlUserName = "root"
 	SqlPassword = "123456"
 	DataBase    = "videoWebsite"
 	MysqlIP     = "192.168.1.107.3306" //ipconfig->WLAN->ipv4
