@@ -19,7 +19,7 @@ func GetLikeFromUser(uid int64) string {
 func AddCommentLikeCount(ctx context.Context, uid int64, comment *model.Comment) {
 
 	if RedisClient.ZScore(ctx, GetLikeFromUser(uid), strconv.FormatInt(comment.Cid, 10)).Val() != 1 {
-		//还要有一个所有人可见的页面
+
 		RedisClient.Incr(ctx, GetVideoLikeCountKey(comment.Cid))
 		RedisClient.ZIncrBy(ctx, "comment:like_count", 1, strconv.Itoa(int(comment.Cid)))
 	}

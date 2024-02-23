@@ -13,10 +13,7 @@ import (
 )
 
 func ListFollowing(c context.Context, ctx *app.RequestContext, req *following.FollowingListReq) (interface{}, error) {
-	//claim, err := utils.ParseToken(string(ctx.GetHeader("access_token")))
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}禁止自己关注自己
+
 	uid, _ := strconv.ParseInt(req.GetUid(), 10, 64)
 	var res []model.Relation
 	var count int64
@@ -30,12 +27,7 @@ func ListFollowing(c context.Context, ctx *app.RequestContext, req *following.Fo
 	} else {
 		return response.BadResponse(), errors.New("请重新操作")
 	}
-	//else if  req.GetPageSize() == 0 {
-	//	err := dao.Db.Model(&model.Relation{}).Where("from_uid = ?", uid).
-	//		Find(&res).Count(&count).Error
-	//	if err != nil {
-	//		return response.BadResponse(), err
-	//	}}
+
 	resultCh := make(chan *model.User)
 	var users []*model.User
 	var wg sync.WaitGroup
@@ -47,7 +39,7 @@ func ListFollowing(c context.Context, ctx *app.RequestContext, req *following.Fo
 			err := dao.Db.Model(&model.User{}).Where("uid = ?", res[i].ToUid).Find(&item).Error
 			if err == nil {
 				resultCh <- item
-				//users = append(users, item)
+
 			}
 		}(i)
 	}

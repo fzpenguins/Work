@@ -19,16 +19,7 @@ func ListFriends(c context.Context, ctx *app.RequestContext, req *friends.Friend
 	}
 	var myFriends []*model.User
 	//互关为好友
-	//followingReq := following.FollowingListReq{Uid: claim.Uid}
-	//followingList, err := ListFollowing(c, ctx, &followingReq)
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}
-	////followerReq := following.FollowingListReq{Uid: claim.Uid}
-	////followerList, err := ListFollower(c, ctx, &followerReq)
-	////if err != nil {
-	////	return response.BadResponse(), err
-	////}
+
 	////获得的uid能够在follower中查找到，就加入，否则跳过
 	var res []model.Relation
 	err = dao.Db.Model(&model.Relation{}).Where("from_uid = ? AND status = ?", claim.Uid, 0).Find(&res).Error
@@ -65,11 +56,6 @@ func ListFriends(c context.Context, ctx *app.RequestContext, req *friends.Friend
 	} else if req.GetPageNum() >= totalPage && totalPage > 0 { //从0开始计算的
 		return response.BadResponse(), errors.New("请重新操作")
 	}
-	//startIndex := req.GetPageNum() * req.GetPageSize()
-	//endIndex := startIndex + req.GetPageSize()
-	//if endIndex > int64(len(myFriends)) {
-	//	endIndex = int64(len(myFriends))
-	//}
 
 	return response.UserInfoResponse(myFriends, int64(len(myFriends))), nil
 }

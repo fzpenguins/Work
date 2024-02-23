@@ -31,6 +31,7 @@ func PublishVideo(c context.Context, ctx *app.RequestContext, videoInfo *video.V
 	//要把视频文件存储到minio的步骤还没写
 	videoKey, err := UploadVideo(videoInfo.Data.VideoUrl)
 	if err != nil {
+		fmt.Println(err)
 		return response.BadResponse(), err
 	}
 	coverKey, err := UploadCover(videoInfo.Data.CoverUrl)
@@ -45,8 +46,7 @@ func PublishVideo(c context.Context, ctx *app.RequestContext, videoInfo *video.V
 		Title:       videoInfo.GetTitle(),
 		Description: videoInfo.GetDescription(),
 		CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
-		//UpdatedAt:   time.Now().Format("2006-01-02 15:04:05"),
-		//DeletedAt:   time.Now().Format("1970-01-01 08:00:00"),
+
 		Key:      videoKey,
 		CoverKey: coverKey,
 	}
@@ -87,12 +87,6 @@ func ListVideos(c context.Context, ctx *app.RequestContext, videoRequest *video.
 }
 
 func PopularRank(c context.Context, ctx *app.RequestContext, videoRequest *video.VideoPopularReq) (interface{}, error) {
-	// _, err := jwt.ParseToken(string(ctx.GetHeader("access_token")))
-	// if err != nil {
-	// 	return response.BadResponse(), err
-	// }
-	//这个只是用来获得uid的
-	//cnt, resp := cache.FindVideoRank(c)
 
 	var videos []model.Video
 	if videoRequest.GetPageNum() < 0 || videoRequest.GetPageSize() < 0 {
@@ -110,25 +104,6 @@ func PopularRank(c context.Context, ctx *app.RequestContext, videoRequest *video
 		videos[i].VisitCount = int(cache.VisitCount(c, videos[i].Vid)) //获取点击量
 		videos[i].LikeCount = int(cache.LikeCount(c, videos[i].Vid))
 	}
-	// var resps []response.VideoResponse
-	// for _, v := range resp {
-	// 	video, _ := cache.FindVideoByVid(c, int64(v.Vid))
-	// 	videoUrl, _ := GetURL(video.Key)
-	// 	coverUrl, _ := GetURL(video.CoverKey)
-	// 	resps = append(resps, response.VideoResponse{
-	// 		Vid:          video.Vid,
-	// 		Uid:          video.Uid,
-	// 		VideoUrl:     videoUrl,
-	// 		CoverUrl:     coverUrl,
-	// 		Title:        video.Title,
-	// 		Description:  video.Description,
-	// 		VisitCount:   video.VisitCount,
-	// 		LikeCount:    video.VisitCount,
-	// 		CommentCount: video.CommentCount,
-	// 		CreatedAt:    video.CreatedAt,
-	// 		UpdatedAt:    video.UpdatedAt,
-	// 		DeletedAt:    video.DeletedAt,
-	// 	})
 
 	var videosInfo []*video.ItemsResponse
 

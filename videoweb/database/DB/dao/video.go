@@ -24,7 +24,7 @@ func (dao *VideoDao) CreateVideo(video *model.Video) (err error) {
 }
 
 func (dao *VideoDao) FindVideoByVid(vid int64) (video model.Video, err error) {
-	//err = dao.DB.Where("vid=?", vid).First(video).Error
+
 	err = dao.DB.Model(&model.Video{}).Where("vid = ?", vid).First(&video).Error
 	return
 }

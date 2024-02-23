@@ -32,9 +32,9 @@ func UploadVideo(filePath string) (string, error) {
 	objectName := "video/" + uuid.Must(uuid.NewRandom()).String() + ext
 	_, err := config.MinioClient.FPutObject(context.Background(), config.BucketName, objectName, filePath, minio.PutObjectOptions{})
 	if err != nil {
-		return "", errors.New("文件上传失败")
+		return "", err
 	}
-	return objectName, nil
+	return objectName, err
 }
 
 func UploadCover(filePath string) (string, error) {
@@ -42,7 +42,7 @@ func UploadCover(filePath string) (string, error) {
 	objectName := "cover/" + uuid.Must(uuid.NewRandom()).String() + ext
 	_, err := config.MinioClient.FPutObject(context.Background(), config.BucketName, objectName, filePath, minio.PutObjectOptions{})
 	if err != nil {
-		return "", errors.New("文件上传失败")
+		return "", err
 	}
 	return objectName, nil
 }

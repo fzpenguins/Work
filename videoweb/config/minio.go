@@ -21,6 +21,6 @@ func InitMinIoClient() {
 	}
 	err = MinioClient.MakeBucket(context.Background(), BucketName, minio.MakeBucketOptions{})
 	if err != nil {
-		log.Println("this bucket already exists,no need to make")
+		log.Println(err)
 	}
 }

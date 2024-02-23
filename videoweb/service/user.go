@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"strconv"
 	"time"
@@ -100,11 +99,10 @@ func UploadAvatar(c context.Context, ctx *app.RequestContext, url string) (inter
 
 func SearchUserInfo(c context.Context, ctx *app.RequestContext, req *user.UserInfoReq) (interface{}, error) {
 	userDao := dao.NewUserDao(c)
-	//claim, err := utils.ParseToken(string(ctx.GetHeader("access_token")))
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}
-	fmt.Println(req.GetUid())
-	usr, _ := userDao.FindUserByUid(req.GetUid()) //从token中解析到uid
+
+	usr, err := userDao.FindUserByUid(req.GetUid()) //从token中解析到uid
+	if err != nil {
+		return response.BadResponse(), err
+	}
 	return response.BestUserResponse(usr), nil
 }

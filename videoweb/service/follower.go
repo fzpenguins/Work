@@ -26,13 +26,6 @@ func ListFollower(c context.Context, ctx *app.RequestContext, req *following.Fol
 	} else {
 		return response.BadResponse(), errors.New("请重新操作")
 	}
-	//else if req.GetPageNum() == 0 && req.GetPageSize() == 0 {
-	//	err := dao.Db.Model(&model.Relation{}).Where("to_uid = ? AND status = ?", toUid,0).
-	//		Find(&res).Count(&count).Error
-	//	if err != nil {
-	//		return response.BadResponse(), err
-	//	}
-	//}
 
 	var users []*model.User
 	// 声明一个 WaitGroup

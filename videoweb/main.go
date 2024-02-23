@@ -11,9 +11,10 @@ import (
 
 func main() {
 	h := server.Default()
-	cache.InitRedis()
 	dao.InitDB()
 	config.InitMinIoClient()
+	cache.InitRedis()
+
 	register(h)
 	h.Spin()
 }

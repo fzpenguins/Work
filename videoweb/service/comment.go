@@ -32,10 +32,7 @@ func PublishComment(c context.Context, ctx *app.RequestContext, commentReq *comm
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	//tempNum, err := strconv.ParseInt(commentReq.GetVid(), 10, 64)
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}
+
 	com := model.Comment{
 		Uid:        claim.Uid,
 		Vid:        vid, //commentReq.GetVid(),
@@ -45,8 +42,6 @@ func PublishComment(c context.Context, ctx *app.RequestContext, commentReq *comm
 		ChildCount: 0,
 		Content:    commentReq.Content,
 		CreatedAt:  time.Now().Format("2006-01-02 15:04:05"),
-		//UpdatedAt:  time.Now().Format("1970-01-01 08:00:00"),
-		//DeletedAt:  time.Now().Format("1970-01-01 08:00:00"),
 	}
 	err = dao.Db.Model(&model.Comment{}).Create(&com).Error
 	if err != nil {
@@ -126,12 +121,5 @@ func DeleteComment(c context.Context, ctx *app.RequestContext, commentReq *comme
 		return response.BadResponse(), errors.New("请重新操作")
 	}
 
-	//err = dao.Db.Model(&model.Comment{}).Where("uid = ?", claim.Uid).
-	//	Where("vid = ? OR cid = ?", commentReq.GetVid(), commentReq.GetCid()).Delete(&model.Comment{}).Error
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}
-	//cache.RedisClient.ZRem(c, "comment:like_count") //对redis内的存储单元也要进行删除操作
-	//cache.RedisClient.ZRem()
 	return response.GoodResponse(), nil
 }

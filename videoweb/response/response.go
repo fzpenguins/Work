@@ -6,11 +6,6 @@ import (
 	"videoweb/pkg/e"
 )
 
-//type Base struct {
-//	Code int    `json:"code"`
-//	Msg  string `json:"msg"`
-//}
-
 func BadResponse() interface{} {
 	return common.BaseResponse{
 		Code: e.FailureCode,
