@@ -37,7 +37,7 @@ func ListFriends(c context.Context, ctx *app.RequestContext, req *friends.Friend
 			var u *model.User
 			dao.Db.Model(&model.Relation{}).Where("from_uid = ? AND to_uid = ? AND status = ?", res[i].ToUid, claim.Uid, 0).Find(&d)
 			dao.Db.Model(&model.User{}).Where("uid = ?", d.FromUid).Find(&u)
-			//myFriends = append(myFriends, u)
+
 			result <- u
 		}(i)
 	}

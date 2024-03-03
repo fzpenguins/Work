@@ -31,13 +31,11 @@ func ActionLike(c context.Context, ctx *app.RequestContext, likeRequest *like.Ac
 		if err != nil {
 			return response.BadResponse(), err
 		}
-		v, err := videoDao.FindVideoByVid(tempNum) //(int64(likeRequest.GetVid()))
+		v, err := videoDao.FindVideoByVid(tempNum)
 		if err != nil {
 			return response.BadResponse(), nil
 		}
-		//if v.Vid == 0 {
-		//	return response.BadResponse(), errors.New("未找到指定的视频")
-		//}
+
 		if likeRequest.GetActionType() == "1" {
 			cache.AddLikeCount(c, claim.Uid, &v)
 		} else if likeRequest.GetActionType() == "2" {
@@ -57,9 +55,7 @@ func ActionLike(c context.Context, ctx *app.RequestContext, likeRequest *like.Ac
 		if err != nil {
 			return response.BadResponse(), nil
 		}
-		//if com.Cid == 0 {
-		//	return response.BadResponse(), errors.New("未找到指定的评论")
-		//}
+
 		if likeRequest.GetActionType() == "1" {
 			cache.AddCommentLikeCount(c, claim.Uid, &com)
 		} else if likeRequest.GetActionType() == "2" {
@@ -72,8 +68,6 @@ func ActionLike(c context.Context, ctx *app.RequestContext, likeRequest *like.Ac
 	}
 }
 
-//统计多少值设置为1用bitcount
-
 func ListLikes(c context.Context, ctx *app.RequestContext, likeRequest *like.ListReq) (interface{}, error) {
 	tempNum, err := strconv.ParseInt(likeRequest.GetUid(), 10, 64)
 	key := cache.GetVideoLikeFromUser(tempNum)
@@ -84,7 +78,7 @@ func ListLikes(c context.Context, ctx *app.RequestContext, likeRequest *like.Lis
 		length = cache.RedisClient.ZRevRangeByScore(c, key, &redis.ZRangeBy{
 			Min:    "1",
 			Max:    "1",
-			Offset: int64(pos), //(likeRequest.GetPageNum() - 1) * likeRequest.GetPageSize(),
+			Offset: int64(pos),
 			Count:  likeRequest.GetPageSize(),
 		}).Val()
 		if cache.RedisClient.ZCard(c, key).Val() <= likeRequest.GetPageSize() {
@@ -93,7 +87,7 @@ func ListLikes(c context.Context, ctx *app.RequestContext, likeRequest *like.Lis
 		pos += len(length)
 		if int64(pos) >= likeRequest.GetPageNum()*likeRequest.GetPageSize() {
 			break
-		} //循环这里退出的条件多考虑下
+		}
 	}
 
 	var vids []int64

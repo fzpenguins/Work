@@ -45,11 +45,6 @@ func ActionRelation(c context.Context, ctx *app.RequestContext, req *relation.Re
 			return response.BadResponse(), err
 		}
 	} else {
-		//r = model.Relation{
-		//	FromUid: claim.Uid,
-		//	ToUid:   toUid,
-		//	Status:  req.GetActionType(),
-		//}
 		err = dao.Db.Model(&model.Relation{}).Where("to_uid = ? AND from_uid = ?", toUid, claim.Uid).Update("status", req.GetActionType()).Error
 		if err != nil {
 			return response.BadResponse(), err

@@ -38,7 +38,6 @@ func Register(c context.Context, userRegister *user.UserRegisterReq) (interface{
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	//u.CreatedAt = time.Now().Format("2006-01-02 15:04:05")
 
 	err = dao.Db.Model(&model.User{}).Create(&u).Error
 	if err != nil {
@@ -53,20 +52,13 @@ func Login(c context.Context, userLogin *user.UserLoginReq) (interface{}, error)
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	//fmt.Println(1)
 	if !usr.VerifyPassword(userLogin.Password) {
 		return response.BadResponse(), nil
 	}
-	//fmt.Println(2)
 	err = userDao.UpdateDate(usr)
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	//fmt.Println(3)
-	//err = dao.Db.Model(&model.User{}).Save(&usr).Error
-	//if err != nil {
-	//	return response.BadResponse(), err
-	//}
 	accessToken, refreshToken, err := utils.GenerateToken(usr.Uid, usr.Username)
 	if err != nil {
 		return response.BadResponse(), err
@@ -85,7 +77,7 @@ func UploadAvatar(c context.Context, ctx *app.RequestContext, url string) (inter
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	usr, _ := userDao.FindUserByUid(strconv.FormatInt(claim.Uid, 10)) //从token中解析到uid
+	usr, _ := userDao.FindUserByUid(strconv.FormatInt(claim.Uid, 10))
 	err = userDao.UpdateDate(usr)
 	if err != nil {
 		return response.BadResponse(), err
@@ -99,8 +91,7 @@ func UploadAvatar(c context.Context, ctx *app.RequestContext, url string) (inter
 
 func SearchUserInfo(c context.Context, ctx *app.RequestContext, req *user.UserInfoReq) (interface{}, error) {
 	userDao := dao.NewUserDao(c)
-
-	usr, err := userDao.FindUserByUid(req.GetUid()) //从token中解析到uid
+	usr, err := userDao.FindUserByUid(req.GetUid())
 	if err != nil {
 		return response.BadResponse(), err
 	}

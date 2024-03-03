@@ -54,8 +54,8 @@ func PublishVideo(c context.Context, ctx *app.RequestContext, videoInfo *video.V
 	if err != nil {
 		return response.BadResponse(), err
 	}
-	cache.AddVisitCount(c, &v)          //
-	return response.GoodResponse(), nil //response.Resp([]*video.ItemsResponse{response.MakeVideoResponse(&v)}), nil
+	cache.AddVisitCount(c, &v)
+	return response.GoodResponse(), nil
 }
 
 func ListVideos(c context.Context, ctx *app.RequestContext, videoRequest *video.VideoListReq) (interface{}, error) {
@@ -121,28 +121,28 @@ func SearchVideo(c context.Context, ctx *app.RequestContext, videoRequest *video
 	}
 	var videos []model.Video
 	//var query *gorm.DB
-	query := dao.Db.Where("description LIKE ? OR title LIKE ?", "%"+videoRequest.Keywords+"%", "%"+videoRequest.Keywords+"%") //.Find(&videos)
+	query := dao.Db.Where("description LIKE ? OR title LIKE ?", "%"+videoRequest.Keywords+"%", "%"+videoRequest.Keywords+"%")
 
 	if videoRequest.GetUsername() != "" {
 		d := dao.NewUserDao(c)
 		user, _ := d.FindUserByName(videoRequest.GetUsername())
-		query = query.Where("uid = ?", user.Uid) //.Find(&videos)
+		query = query.Where("uid = ?", user.Uid)
 
 	}
 
 	if videoRequest.GetFromDate() > 0 {
 		FromDateString := time.Unix(videoRequest.GetFromDate(), 0).Format("2006-01-02 15:04:05")
-		query = query.Where("created_at >= ?", FromDateString) //.Find(&videos)
+		query = query.Where("created_at >= ?", FromDateString)
 	}
 	if videoRequest.GetToDate() > 0 {
 		ToDateString := time.Unix(videoRequest.GetToDate(), 0).Format("2006-01-02 15:04:05")
-		query = query.Where("created_at >= ?", ToDateString) //.Find(&videos)
+		query = query.Where("created_at >= ?", ToDateString)
 	}
 	var size int64
 	query.Find(&videos).Count(&size)
-	//size := len(videos)
+
 	offset := videoRequest.PageNum * videoRequest.PageSize
-	for i := offset; i-offset < int64(size); i++ {
+	for i := offset; i-offset < size; i++ {
 		// cache.AddVisitCount(c, &videos[i])                             //增加点击量
 		videos[i].VisitCount = int(cache.VisitCount(c, videos[i].Vid)) //获取点击量
 		videos[i].LikeCount = int(cache.LikeCount(c, videos[i].Vid))

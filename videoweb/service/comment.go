@@ -19,7 +19,7 @@ import (
 
 func PublishComment(c context.Context, ctx *app.RequestContext, commentReq *comment.CommentPublishReq) (interface{}, error) {
 	vid, _ := strconv.ParseInt(commentReq.GetVid(), 10, 64)
-	//cid,_ := strconv.ParseInt(commentReq.GetCid(),10,64)
+
 	if len(commentReq.GetContent()) == 0 {
 		return response.BadResponse(), errors.New("评论不能为空")
 	}
@@ -52,7 +52,7 @@ func PublishComment(c context.Context, ctx *app.RequestContext, commentReq *comm
 
 func ListComment(c context.Context, ctx *app.RequestContext, commentReq *comment.CommentListReq) (interface{}, error) {
 	vid, _ := strconv.ParseInt(commentReq.GetVid(), 10, 64)
-	//	cid,_ := strconv.ParseInt(commentReq.GetCid(),10,64)
+
 	var comments []model.Comment
 	err := dao.Db.Model(&model.Comment{}).Where("vid = ?", vid).Limit(int(commentReq.GetPageSize())).
 		Offset(int(commentReq.GetPageNum() * commentReq.GetPageSize())).
