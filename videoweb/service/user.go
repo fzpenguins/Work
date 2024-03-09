@@ -86,6 +86,7 @@ func UploadAvatar(c context.Context, ctx *app.RequestContext, url string) (inter
 	if err != nil {
 		return response.BadResponse(), err
 	}
+	usr.AvatarUrl = url
 	return response.BestUserResponse(usr), nil
 }
 

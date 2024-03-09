@@ -5,7 +5,7 @@ const (
 	SqlUserName = "root"
 	SqlPassword = "123456"
 	DataBase    = "videoWebsite"
-	MysqlIP     = "192.168.1.107.3306" //ipconfig->WLAN->ipv4
+	MysqlIP     = "192.168.239.126" //"192.168.1.107.3306" //ipconfig->WLAN->ipv4
 )
 
 //[RabbitMQ]
