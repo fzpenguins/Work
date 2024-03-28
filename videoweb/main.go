@@ -8,17 +8,21 @@ import (
 	"videoweb/config"
 	"videoweb/database/DB/dao"
 	"videoweb/database/cache"
+	"videoweb/rabbitmq"
+	"videoweb/service/ws"
 )
 
 func main() {
-	h := server.Default()
+	go ws.MessageHandler()
+	h := server.Default(server.WithMaxRequestBodySize(419430400))
 	dao.InitDB()
 	config.InitMinIoClient()
 	cache.InitRedis()
+	rabbitmq.LinkRabbitmq()
 
-	register(h)
 	h.StaticFS("/data", &app.FS{
 		Root: "usr/local",
 	})
+	register(h)
 	h.Spin()
 }

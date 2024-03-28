@@ -4,6 +4,8 @@ package video
 
 import (
 	"context"
+	"strconv"
+	"time"
 	"videoweb/response"
 	"videoweb/service"
 
@@ -87,5 +89,23 @@ func Search(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, response.BadResponse())
 		return
 	}
+	c.JSON(consts.StatusOK, resp)
+}
+
+// Feed .
+// @router /video/feed [GET]
+func Feed(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req video.VideoFeedReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusOK, response.BadResponse())
+		return
+	}
+	if len(req.GetLatestTime()) == 0 {
+		req.LatestTime = strconv.FormatInt(time.Now().Unix(), 10)
+	}
+	resp, err := service.FeedVideo(ctx, c, &req)
+
 	c.JSON(consts.StatusOK, resp)
 }

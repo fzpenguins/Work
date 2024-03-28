@@ -7,7 +7,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"strconv"
 	"videoweb/biz/model/hertz/video"
-
 	"videoweb/database/DB/dao"
 	"videoweb/database/DB/model"
 )
@@ -103,18 +102,37 @@ func SaveQueryVideoResult(ctx context.Context) {
 
 }
 
-func FindVideoRank(ctx context.Context) (int64, []video.VideoRankResp) {
-	resp := make([]video.VideoRankResp, 0)
-	count, _ := RedisClient.ZCard(ctx, "visit_count").Result()
-	Stringcmds, _ := RedisClient.ZRevRange(ctx, "visit_count", 0, -1).Result()
-	for _, Stringcmd := range Stringcmds {
-		v := RedisClient.ZScore(ctx, "visit_count", Stringcmd).Val()
-		vid, _ := strconv.Atoi(Stringcmd)
-		resp = append(resp, video.VideoRankResp{
-			Vid:        strconv.FormatInt(int64(vid), 10),
-			VisitCount: int64(v),
-		})
-	}
+func FindVideoVidsRank(ctx context.Context, videoRequest *video.VideoPopularReq) (vids []int64, offset int64, cnt int64) { // ([]int64, []string){//(int64, []video.VideoRankResp, []string) {
+	//resp := make([]video.VideoRankResp, 0)
+	offset = videoRequest.GetPageNum() * videoRequest.GetPageSize()
+	cnt, _ = RedisClient.ZCard(ctx, "visit_count").Result()
 
-	return count, resp
+	Stringcmds, _ := RedisClient.ZRevRange(ctx, "visit_count", 0, -1).Result()
+	if offset >= int64(len(Stringcmds)) {
+		return []int64{}, 0, 0
+	}
+	for i := offset; i-offset < videoRequest.GetPageSize() && i < cnt; i++ {
+		vid, _ := strconv.ParseInt(Stringcmds[i], 10, 64)
+		vids = append(vids, vid)
+	}
+	//for _, Stringcmd := range Stringcmds {
+	//	v := RedisClient.ZScore(ctx, "visit_count", Stringcmd).Val()
+	//	vid, _ := strconv.Atoi(Stringcmd)
+	//	resp = append(resp, video.VideoRankResp{
+	//		Vid:        strconv.FormatInt(int64(vid), 10),
+	//		VisitCount: int64(v),
+	//	})
+	//}
+
+	return
+}
+
+func AddVideoComments(ctx context.Context, vid, cid string) error {
+	err := RedisClient.SAdd(ctx, VideoCommentKey(vid), cid).Err()
+	return err
+}
+
+func DecrVideoComments(ctx context.Context, vid, cid string) error {
+	err := RedisClient.SRem(ctx, VideoCommentKey(vid), cid).Err()
+	return err
 }

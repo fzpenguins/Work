@@ -38,6 +38,15 @@ message UserUploadReq{
   optional  string AvatarUrl = 1[(api.body) = "avatar_url"];
 }
 
+message UserMFAReq{
+
+}
+
+message UserBindMFAReq{
+  optional string Code = 1[(api.body) = "code"];
+  optional string Secret = 2[(api.body) = "secret"];
+}
+
 message GoodResponse{
   BaseResponse Base = 1[(api.body) = "base"];
 }
@@ -47,7 +56,15 @@ message GoodUserResponse{
   DataResponse Data = 2[(api.body) = "data"];
 }
 
+message MFAData{
+  string Secret = 1[(api.body) = "secret"];
+  string Qrcode = 2[(api.body) = "qrcode"];
+}
 
+message GoodMFAResponse{
+  BaseResponse Base = 1[(api.body) = "base"];
+  MFAData Data = 2[(api.body) = "data"];
+}
 
 service User{
   rpc Register(UserRegisterReq) returns(GoodResponse){
@@ -65,6 +82,15 @@ service User{
   rpc AvatarUpload(UserUploadReq) returns(GoodUserResponse){
     option (api.put) = "/user/avatar/upload";
   }
+
+  rpc MFAGet(UserMFAReq) returns(GoodMFAResponse){
+    option (api.get) = "/auth/mfa/qrcode";
+  }
+
+  rpc MFABind(UserBindMFAReq) returns(GoodResponse){
+    option (api.post) = "/auth/mfa/bind";
+  }
+
 }
 
 

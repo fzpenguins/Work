@@ -41,3 +41,23 @@ func _userMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _authMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _mfaMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _mfagetMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{middleware.AuthMiddleware()}
+}
+
+func _mfabindMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{middleware.AuthMiddleware()}
+}

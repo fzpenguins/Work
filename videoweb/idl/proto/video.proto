@@ -34,6 +34,10 @@ message VideoSearchReq{
   optional  string Username = 6[(api.body)="username"];
 }
 
+message VideoFeedReq{
+  string LatestTime = 1[(api.query)="latest_time"];
+}
+
 message ItemsResponse{
   string Vid = 1[(api.body)="vid"];
   string Uid = 2[(api.body)="uid"];
@@ -82,4 +86,7 @@ service Video{
     option (api.post) = "/video/search";
   }
 
+  rpc Feed(VideoFeedReq) returns(VideoResponse){
+    option (api.get) = "/video/feed";
+  }
 }

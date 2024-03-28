@@ -35,6 +35,7 @@ func Migrate() {
 	Db.AutoMigrate(&model.Relation{})
 	Db.AutoMigrate(&model.Comment{})
 	Db.AutoMigrate(&model.Like{})
+	Db.AutoMigrate(&model.Message{})
 }
 
 func NewDBClient(ctx context.Context) *gorm.DB {

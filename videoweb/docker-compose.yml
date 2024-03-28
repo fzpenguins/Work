@@ -47,6 +47,16 @@ services:
     network_mode: "bridge"
 
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    network_mode: "bridge"
 
   web:
     build: .
@@ -55,6 +65,7 @@ services:
       - mysql
       - redis
       - minio
+      - rabbitmq
     ports:
       - "8888:8888"
     restart: always

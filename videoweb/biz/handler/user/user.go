@@ -90,3 +90,43 @@ func AvatarUpload(ctx context.Context, c *app.RequestContext) {
 	}
 	c.JSON(consts.StatusOK, resp)
 }
+
+// MFAGet .
+// @router /auth/mfa/qrcode [GET]
+func MFAGet(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.UserMFAReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusOK, response.BadResponse())
+		return
+	}
+
+	resp, err := service.GetMfa(ctx, c)
+	if err != nil {
+		c.JSON(consts.StatusOK, response.BadResponse())
+		return
+	}
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// MFABind .
+// @router /auth/mfa/bind [POST]
+func MFABind(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req user.UserBindMFAReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusOK, response.BadResponse())
+		return
+	}
+
+	resp, err := service.BindMFA(ctx, c, &req)
+	if err != nil {
+		c.JSON(consts.StatusOK, response.BadResponse())
+		return
+	}
+
+	c.JSON(consts.StatusOK, resp)
+}
